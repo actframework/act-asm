@@ -46,8 +46,8 @@
   </parent>
 
   <scm>
-    <connection>scm:git:{git.url}</connection>
-    <developerConnection>scm:git:{git.url}</developerConnection>
+    <connection>scm:git:${git.url}</connection>
+    <developerConnection>scm:git:${git.url}</developerConnection>
     <url>{git.url}</url>
   </scm>
 
