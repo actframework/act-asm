@@ -14,6 +14,12 @@
   ~ License for the specific language governing permissions and limitations
   ~ under the License.
   -->
+<!-- History
+
+5.0
+- package relocation from asm 5.0
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -22,7 +28,7 @@
   <groupId>org.actframework</groupId>
   <artifactId>act-asm</artifactId>
   <packaging>jar</packaging>
-  <version>0.1.0-SNAPSHOT</version>
+  <version>5.0-SNAPSHOT</version>
 
   <name>ACT ASM</name>
   <description>All source code come from ASM 5 and put under new namespace: act.asm</description>
