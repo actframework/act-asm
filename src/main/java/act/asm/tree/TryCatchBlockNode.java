@@ -66,8 +66,6 @@ public class TryCatchBlockNode {
      * list is a list of {@link TypeAnnotationNode} objects. May be
      * <tt>null</tt>.
      *
-     * @associates TypeAnnotationNode
-     * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
 
@@ -76,8 +74,6 @@ public class TryCatchBlockNode {
      * This list is a list of {@link TypeAnnotationNode} objects. May be
      * <tt>null</tt>.
      *
-     * @associates TypeAnnotationNode
-     * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
 

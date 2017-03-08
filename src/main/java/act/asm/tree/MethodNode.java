@@ -79,8 +79,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible annotations of this method. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates AnnotationNode
-     * @label visible
      */
     public List<AnnotationNode> visibleAnnotations;
 
@@ -88,8 +86,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible annotations of this method. This list is a list of
      * {@link AnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates AnnotationNode
-     * @label invisible
      */
     public List<AnnotationNode> invisibleAnnotations;
 
@@ -97,8 +93,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible type annotations of this method. This list is a list
      * of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates TypeAnnotationNode
-     * @label visible
      */
     public List<TypeAnnotationNode> visibleTypeAnnotations;
 
@@ -106,8 +100,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible type annotations of this method. This list is a
      * list of {@link TypeAnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates TypeAnnotationNode
-     * @label invisible
      */
     public List<TypeAnnotationNode> invisibleTypeAnnotations;
 
@@ -115,7 +107,6 @@ public class MethodNode extends MethodVisitor {
      * The non standard attributes of this method. This list is a list of
      * {@link Attribute} objects. May be <tt>null</tt>.
      *
-     * @associates Attribute
      */
     public List<Attribute> attrs;
 
@@ -133,8 +124,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime visible parameter annotations of this method. These lists are
      * lists of {@link AnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates AnnotationNode
-     * @label invisible parameters
      */
     public List<AnnotationNode>[] visibleParameterAnnotations;
 
@@ -142,8 +131,6 @@ public class MethodNode extends MethodVisitor {
      * The runtime invisible parameter annotations of this method. These lists
      * are lists of {@link AnnotationNode} objects. May be <tt>null</tt>.
      *
-     * @associates AnnotationNode
-     * @label visible parameters
      */
     public List<AnnotationNode>[] invisibleParameterAnnotations;
 
@@ -151,8 +138,6 @@ public class MethodNode extends MethodVisitor {
      * The instructions of this method. This list is a list of
      * {@link AbstractInsnNode} objects.
      *
-     * @associates AbstractInsnNode
-     * @label instructions
      */
     public InsnList instructions;
 
@@ -160,7 +145,6 @@ public class MethodNode extends MethodVisitor {
      * The try catch blocks of this method. This list is a list of
      * {@link TryCatchBlockNode} objects.
      *
-     * @associates TryCatchBlockNode
      */
     public List<TryCatchBlockNode> tryCatchBlocks;
 
@@ -178,7 +162,6 @@ public class MethodNode extends MethodVisitor {
      * The local variables of this method. This list is a list of
      * {@link LocalVariableNode} objects. May be <tt>null</tt>
      *
-     * @associates LocalVariableNode
      */
     public List<LocalVariableNode> localVariables;
 
@@ -186,7 +169,6 @@ public class MethodNode extends MethodVisitor {
      * The visible local variable annotations of this method. This list is a
      * list of {@link LocalVariableAnnotationNode} objects. May be <tt>null</tt>
      *
-     * @associates LocalVariableAnnotationNode
      */
     public List<LocalVariableAnnotationNode> visibleLocalVariableAnnotations;
 
@@ -194,7 +176,6 @@ public class MethodNode extends MethodVisitor {
      * The invisible local variable annotations of this method. This list is a
      * list of {@link LocalVariableAnnotationNode} objects. May be <tt>null</tt>
      *
-     * @associates LocalVariableAnnotationNode
      */
     public List<LocalVariableAnnotationNode> invisibleLocalVariableAnnotations;
 
