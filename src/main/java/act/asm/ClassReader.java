@@ -618,83 +618,91 @@ public class ClassReader {
             u += 6 + readInt(u + 4);
         }
 
-        // visits the class declaration
-        classVisitor.visit(readInt(items[1] - 7), access, name, signature,
-                superClass, interfaces);
+        AsmContext.enterClass(name);
 
-        // visits the srccode and debug info
-        if ((flags & SKIP_DEBUG) == 0
-                && (sourceFile != null || sourceDebug != null)) {
-            classVisitor.visitSource(sourceFile, sourceDebug);
-        }
+        try {
 
-        // visits the outer class
-        if (enclosingOwner != null) {
-            classVisitor.visitOuterClass(enclosingOwner, enclosingName,
-                    enclosingDesc);
-        }
+            // visits the class declaration
+            classVisitor.visit(readInt(items[1] - 7), access, name, signature,
+                    superClass, interfaces);
 
-        // visits the class annotations and type annotations
-        if (ANNOTATIONS && anns != 0) {
-            for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        classVisitor.visitAnnotation(readUTF8(v, c), true));
+            // visits the srccode and debug info
+            if ((flags & SKIP_DEBUG) == 0
+                    && (sourceFile != null || sourceDebug != null)) {
+                classVisitor.visitSource(sourceFile, sourceDebug);
             }
-        }
-        if (ANNOTATIONS && ianns != 0) {
-            for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        classVisitor.visitAnnotation(readUTF8(v, c), false));
-            }
-        }
-        if (ANNOTATIONS && tanns != 0) {
-            for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        classVisitor.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), true));
-            }
-        }
-        if (ANNOTATIONS && itanns != 0) {
-            for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        classVisitor.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), false));
-            }
-        }
 
-        // visits the attributes
-        while (attributes != null) {
-            Attribute attr = attributes.next;
-            attributes.next = null;
-            classVisitor.visitAttribute(attributes);
-            attributes = attr;
-        }
-
-        // visits the inner classes
-        if (innerClasses != 0) {
-            int v = innerClasses + 2;
-            for (int i = readUnsignedShort(innerClasses); i > 0; --i) {
-                classVisitor.visitInnerClass(readClass(v, c),
-                        readClass(v + 2, c), readUTF8(v + 4, c),
-                        readUnsignedShort(v + 6));
-                v += 8;
+            // visits the outer class
+            if (enclosingOwner != null) {
+                classVisitor.visitOuterClass(enclosingOwner, enclosingName,
+                        enclosingDesc);
             }
-        }
 
-        // visits the fields and methods
-        u = header + 10 + 2 * interfaces.length;
-        for (int i = readUnsignedShort(u - 2); i > 0; --i) {
-            u = readField(classVisitor, context, u);
-        }
-        u += 2;
-        for (int i = readUnsignedShort(u - 2); i > 0; --i) {
-            u = readMethod(classVisitor, context, u);
-        }
+            // visits the class annotations and type annotations
+            if (ANNOTATIONS && anns != 0) {
+                for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            classVisitor.visitAnnotation(readUTF8(v, c), true));
+                }
+            }
+            if (ANNOTATIONS && ianns != 0) {
+                for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            classVisitor.visitAnnotation(readUTF8(v, c), false));
+                }
+            }
+            if (ANNOTATIONS && tanns != 0) {
+                for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            classVisitor.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), true));
+                }
+            }
+            if (ANNOTATIONS && itanns != 0) {
+                for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            classVisitor.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), false));
+                }
+            }
 
-        // visits the end of the class
-        classVisitor.visitEnd();
+            // visits the attributes
+            while (attributes != null) {
+                Attribute attr = attributes.next;
+                attributes.next = null;
+                classVisitor.visitAttribute(attributes);
+                attributes = attr;
+            }
+
+            // visits the inner classes
+            if (innerClasses != 0) {
+                int v = innerClasses + 2;
+                for (int i = readUnsignedShort(innerClasses); i > 0; --i) {
+                    classVisitor.visitInnerClass(readClass(v, c),
+                            readClass(v + 2, c), readUTF8(v + 4, c),
+                            readUnsignedShort(v + 6));
+                    v += 8;
+                }
+            }
+
+            // visits the fields and methods
+            u = header + 10 + 2 * interfaces.length;
+            for (int i = readUnsignedShort(u - 2); i > 0; --i) {
+                u = readField(classVisitor, context, u);
+            }
+            u += 2;
+            for (int i = readUnsignedShort(u - 2); i > 0; --i) {
+                u = readMethod(classVisitor, context, u);
+            }
+
+            // visits the end of the class
+            classVisitor.visitEnd();
+
+        } finally {
+            AsmContext.exit();
+        }
     }
 
     /**
@@ -765,54 +773,61 @@ public class ClassReader {
         u += 2;
 
         // visits the field declaration
-        FieldVisitor fv = classVisitor.visitField(access, name, desc,
-                signature, value);
-        if (fv == null) {
+        AsmContext.enterField(name);
+        try {
+            FieldVisitor fv = classVisitor.visitField(access, name, desc,
+                    signature, value);
+            if (fv == null) {
+                return u;
+            }
+
+            // visits the field annotations and type annotations
+            if (ANNOTATIONS && anns != 0) {
+                for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            fv.visitAnnotation(readUTF8(v, c), true));
+                }
+            }
+            if (ANNOTATIONS && ianns != 0) {
+                for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            fv.visitAnnotation(readUTF8(v, c), false));
+                }
+            }
+            if (ANNOTATIONS && tanns != 0) {
+                for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            fv.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), true));
+                }
+            }
+            if (ANNOTATIONS && itanns != 0) {
+                for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            fv.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), false));
+                }
+            }
+
+            // visits the field attributes
+            while (attributes != null) {
+                Attribute attr = attributes.next;
+                attributes.next = null;
+                fv.visitAttribute(attributes);
+                attributes = attr;
+            }
+
+            // visits the end of the field
+            fv.visitEnd();
+
             return u;
+        } catch (RuntimeException e) {
+            throw AsmException.of(e);
+        } finally {
+            AsmContext.exit();
         }
-
-        // visits the field annotations and type annotations
-        if (ANNOTATIONS && anns != 0) {
-            for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        fv.visitAnnotation(readUTF8(v, c), true));
-            }
-        }
-        if (ANNOTATIONS && ianns != 0) {
-            for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        fv.visitAnnotation(readUTF8(v, c), false));
-            }
-        }
-        if (ANNOTATIONS && tanns != 0) {
-            for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        fv.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), true));
-            }
-        }
-        if (ANNOTATIONS && itanns != 0) {
-            for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        fv.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), false));
-            }
-        }
-
-        // visits the field attributes
-        while (attributes != null) {
-            Attribute attr = attributes.next;
-            attributes.next = null;
-            fv.visitAttribute(attributes);
-            attributes = attr;
-        }
-
-        // visits the end of the field
-        fv.visitEnd();
-
-        return u;
     }
 
     /**
@@ -908,11 +923,13 @@ public class ClassReader {
         u += 2;
 
         // visits the method declaration
-        MethodVisitor mv = classVisitor.visitMethod(context.access,
-                context.name, context.desc, signature, exceptions);
-        if (mv == null) {
-            return u;
-        }
+        AsmContext.enterMethod(context.name);
+        try {
+            MethodVisitor mv = classVisitor.visitMethod(context.access,
+                    context.name, context.desc, signature, exceptions);
+            if (mv == null) {
+                return u;
+            }
 
         /*
          * if the returned MethodVisitor is in fact a MethodWriter, it means
@@ -924,103 +941,108 @@ public class ClassReader {
          * access, className and descriptor can have been changed, this is not
          * important since they are not copied as is from the reader).
          */
-        if (WRITER && mv instanceof MethodWriter) {
-            MethodWriter mw = (MethodWriter) mv;
-            if (mw.cw.cr == this && signature == mw.signature) {
-                boolean sameExceptions = false;
-                if (exceptions == null) {
-                    sameExceptions = mw.exceptionCount == 0;
-                } else if (exceptions.length == mw.exceptionCount) {
-                    sameExceptions = true;
-                    for (int j = exceptions.length - 1; j >= 0; --j) {
-                        exception -= 2;
-                        if (mw.exceptions[j] != readUnsignedShort(exception)) {
-                            sameExceptions = false;
-                            break;
+            if (WRITER && mv instanceof MethodWriter) {
+                MethodWriter mw = (MethodWriter) mv;
+                if (mw.cw.cr == this && signature == mw.signature) {
+                    boolean sameExceptions = false;
+                    if (exceptions == null) {
+                        sameExceptions = mw.exceptionCount == 0;
+                    } else if (exceptions.length == mw.exceptionCount) {
+                        sameExceptions = true;
+                        for (int j = exceptions.length - 1; j >= 0; --j) {
+                            exception -= 2;
+                            if (mw.exceptions[j] != readUnsignedShort(exception)) {
+                                sameExceptions = false;
+                                break;
+                            }
                         }
                     }
-                }
-                if (sameExceptions) {
+                    if (sameExceptions) {
                     /*
                      * we do not copy directly the code into MethodWriter to
                      * save a byte array copy operation. The real copy will be
                      * done in ClassWriter.toByteArray().
                      */
-                    mw.classReaderOffset = firstAttribute;
-                    mw.classReaderLength = u - firstAttribute;
-                    return u;
+                        mw.classReaderOffset = firstAttribute;
+                        mw.classReaderLength = u - firstAttribute;
+                        return u;
+                    }
                 }
             }
-        }
 
-        // visit the method parameters
-        if (methodParameters != 0) {
-            for (int i = b[methodParameters] & 0xFF, v = methodParameters + 1; i > 0; --i, v = v + 4) {
-                mv.visitParameter(readUTF8(v, c), readUnsignedShort(v + 2));
+            // visit the method parameters
+            if (methodParameters != 0) {
+                for (int i = b[methodParameters] & 0xFF, v = methodParameters + 1; i > 0; --i, v = v + 4) {
+                    mv.visitParameter(readUTF8(v, c), readUnsignedShort(v + 2));
+                }
             }
-        }
 
-        // visits the method annotations
-        if (ANNOTATIONS && dann != 0) {
-            AnnotationVisitor dv = mv.visitAnnotationDefault();
-            readAnnotationValue(dann, c, null, dv);
-            if (dv != null) {
-                dv.visitEnd();
+            // visits the method annotations
+            if (ANNOTATIONS && dann != 0) {
+                AnnotationVisitor dv = mv.visitAnnotationDefault();
+                readAnnotationValue(dann, c, null, dv);
+                if (dv != null) {
+                    dv.visitEnd();
+                }
             }
-        }
-        if (ANNOTATIONS && anns != 0) {
-            for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        mv.visitAnnotation(readUTF8(v, c), true));
+            if (ANNOTATIONS && anns != 0) {
+                for (int i = readUnsignedShort(anns), v = anns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            mv.visitAnnotation(readUTF8(v, c), true));
+                }
             }
-        }
-        if (ANNOTATIONS && ianns != 0) {
-            for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
-                v = readAnnotationValues(v + 2, c, true,
-                        mv.visitAnnotation(readUTF8(v, c), false));
+            if (ANNOTATIONS && ianns != 0) {
+                for (int i = readUnsignedShort(ianns), v = ianns + 2; i > 0; --i) {
+                    v = readAnnotationValues(v + 2, c, true,
+                            mv.visitAnnotation(readUTF8(v, c), false));
+                }
             }
-        }
-        if (ANNOTATIONS && tanns != 0) {
-            for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        mv.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), true));
+            if (ANNOTATIONS && tanns != 0) {
+                for (int i = readUnsignedShort(tanns), v = tanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            mv.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), true));
+                }
             }
-        }
-        if (ANNOTATIONS && itanns != 0) {
-            for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
-                v = readAnnotationTarget(context, v);
-                v = readAnnotationValues(v + 2, c, true,
-                        mv.visitTypeAnnotation(context.typeRef,
-                                context.typePath, readUTF8(v, c), false));
+            if (ANNOTATIONS && itanns != 0) {
+                for (int i = readUnsignedShort(itanns), v = itanns + 2; i > 0; --i) {
+                    v = readAnnotationTarget(context, v);
+                    v = readAnnotationValues(v + 2, c, true,
+                            mv.visitTypeAnnotation(context.typeRef,
+                                    context.typePath, readUTF8(v, c), false));
+                }
             }
-        }
-        if (ANNOTATIONS && mpanns != 0) {
-            readParameterAnnotations(mv, context, mpanns, true);
-        }
-        if (ANNOTATIONS && impanns != 0) {
-            readParameterAnnotations(mv, context, impanns, false);
-        }
+            if (ANNOTATIONS && mpanns != 0) {
+                readParameterAnnotations(mv, context, mpanns, true);
+            }
+            if (ANNOTATIONS && impanns != 0) {
+                readParameterAnnotations(mv, context, impanns, false);
+            }
 
-        // visits the method attributes
-        while (attributes != null) {
-            Attribute attr = attributes.next;
-            attributes.next = null;
-            mv.visitAttribute(attributes);
-            attributes = attr;
+            // visits the method attributes
+            while (attributes != null) {
+                Attribute attr = attributes.next;
+                attributes.next = null;
+                mv.visitAttribute(attributes);
+                attributes = attr;
+            }
+
+            // visits the method code
+            if (code != 0) {
+                mv.visitCode();
+                readCode(mv, context, code);
+            }
+
+            // visits the end of the method
+            mv.visitEnd();
+
+            return u;
+        } catch (RuntimeException e) {
+            throw AsmException.of(e);
+        } finally {
+            AsmContext.exit();
         }
-
-        // visits the method code
-        if (code != 0) {
-            mv.visitCode();
-            readCode(mv, context, code);
-        }
-
-        // visits the end of the method
-        mv.visitEnd();
-
-        return u;
     }
 
     /**
