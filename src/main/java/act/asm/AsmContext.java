@@ -12,10 +12,12 @@ import static java.lang.annotation.ElementType.*;
 public class AsmContext {
 
     private static final ThreadLocal<AsmContext> current = new ThreadLocal<>();
+    private static final ThreadLocal<Integer> line = new ThreadLocal<>();
 
     private String name;
     private ElementType type;
     private AsmContext parent;
+    private Integer lineNo;
 
     AsmContext(String name, ElementType type) {
         this.name = name;
@@ -28,6 +30,10 @@ public class AsmContext {
 
     public ElementType type() {
         return type;
+    }
+
+    public Integer lineNo() {
+        return lineNo;
     }
 
     public String className() {
@@ -69,6 +75,10 @@ public class AsmContext {
         }
     }
 
+    public static void line(int lineNo) {
+        line.set(lineNo);
+    }
+
     public static void enterClass(String className) {
         AsmContext context = new AsmContext(Type.getObjectType(className).getClassName(), TYPE);
         current.set(context);
@@ -101,6 +111,7 @@ public class AsmContext {
                 current.remove();
             }
         }
+        line.remove();
     }
 
     private static AsmContext current() {
@@ -109,7 +120,11 @@ public class AsmContext {
 
     public static AsmContext reset() {
         AsmContext context = current();
+        if (null != context) {
+            context.lineNo = line.get();
+        }
         current.remove();
+        line.remove();
         return context;
     }
 
