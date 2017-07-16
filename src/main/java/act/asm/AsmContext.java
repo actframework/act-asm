@@ -80,8 +80,12 @@ public class AsmContext {
     }
 
     public static void enterClass(String className) {
+        AsmContext parent = current();
         AsmContext context = new AsmContext(Type.getObjectType(className).getClassName(), TYPE);
         current.set(context);
+        if (null != parent) {
+            context.parent = parent;
+        }
     }
 
     public static void enterField(String fieldName) {
