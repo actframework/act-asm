@@ -1397,6 +1397,7 @@ class MethodWriter extends MethodVisitor {
         ++lineNumberCount;
         lineNumber.putShort(start.position);
         lineNumber.putShort(line);
+        AsmContext.line(line);
     }
 
     @Override
