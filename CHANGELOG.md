@@ -1,5 +1,13 @@
 # ACT-ASM Change Log
 
+5.0.5 25/Feb/2018
+
+- Add `public static int line()` to `AsmContext` - required by `Password` enhancer.
+
+5.0.4 11/Feb/2018
+
+- version bump
+
 5.0.3 11/Feb/2018
 
 - Precise line number info on ASM error reporting #2

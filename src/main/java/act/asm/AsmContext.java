@@ -1,10 +1,10 @@
 package act.asm;
 
+import static java.lang.annotation.ElementType.*;
+
 import java.lang.annotation.ElementType;
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import static java.lang.annotation.ElementType.*;
 
 /**
  * Keep track the class and method etc when doing scanning/enhancement
@@ -77,6 +77,10 @@ public class AsmContext {
 
     public static void line(int lineNo) {
         line.set(lineNo);
+    }
+
+    public static int line() {
+        return line.get();
     }
 
     public static void enterClass(String className) {
