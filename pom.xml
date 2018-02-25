@@ -21,7 +21,7 @@
   <groupId>org.actframework</groupId>
   <artifactId>act-asm</artifactId>
   <packaging>jar</packaging>
-  <version>5.0.5</version>
+  <version>5.0.6-SNAPSHOT</version>
 
   <name>ACT ASM</name>
   <description>All source code come from ASM 5 and put under new namespace: act.asm</description>
