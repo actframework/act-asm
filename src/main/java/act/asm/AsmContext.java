@@ -79,7 +79,7 @@ public class AsmContext {
         line.set(lineNo);
     }
 
-    public static int line() {
+    public static Integer line() {
         return line.get();
     }
 

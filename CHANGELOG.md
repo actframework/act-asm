@@ -1,5 +1,8 @@
 # ACT-ASM Change Log
 
+5.0.6 27/Jun/2020 
+- `AsmContext.line()` raises `NullPointerException` #3
+
 5.0.5 25/Feb/2018
 
 - Add `public static int line()` to `AsmContext` - required by `Password` enhancer.
